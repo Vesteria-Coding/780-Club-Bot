@@ -6,7 +6,7 @@ from discord import app_commands, Interaction, Embed
 
 # Setup Credentials
 load_dotenv()
-BOT_TOKEN = os.getenv("discord_token_2")
+BOT_TOKEN = os.getenv("discord_token")
 GUILD_ID = 1361781854700572682
 ALLOWED_USERS = [895402417112375296]
 
