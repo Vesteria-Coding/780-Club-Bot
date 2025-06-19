@@ -6,7 +6,7 @@ from discord import app_commands, Interaction, Embed
 
 # Setup Credentials
 load_dotenv()
-BOT_TOKEN = os.getenv("discord_token")
+BOT_TOKEN = os.getenv("discord_token_2")
 GUILD_ID = 1361781854700572682
 ALLOWED_USERS = [895402417112375296]
 
@@ -72,12 +72,19 @@ async def create_ticket(interaction: discord.Interaction):
     category = discord.utils.get(interaction.guild.categories, name="Tickets")
     if not category:
         category = await interaction.guild.create_category("Tickets")
-    existing = discord.utils.get(category.channels, name=f"ticket—for—{interaction.user.name}")
+    existing = discord.utils.get(category.channels, name=f"ticket-for-{interaction.user.name}")
     if existing:
         await interaction.response.send_message(f"You already have an open ticket: {existing.mention}", ephemeral=True)
         return
-    channel = await interaction.guild.create_text_channel(name=f"ticket—for—{interaction.user.name}", category=category)
-    await channel.set_permissions(interaction.user, view_channel=True, send_messages=True)
+    overwrites = {
+        interaction.guild.default_role: discord.PermissionOverwrite(view_channel=False),
+        interaction.user: discord.PermissionOverwrite(view_channel=True, send_messages=True)
+    }
+    channel = await interaction.guild.create_text_channel(
+        name=f"ticket-for-{interaction.user.name}",
+        category=category,
+        overwrites=overwrites
+    )
     await interaction.response.send_message(f"Ticket created: {channel.mention}", ephemeral=True)
 
 
